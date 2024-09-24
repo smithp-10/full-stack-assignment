@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useTable, useSortBy, usePagination } from 'react-table';
 import FilterPanel from './FilterPanel'; // Ensure this import is correct
 import Fuse from 'fuse.js';
+import './DataTable.css'; // Add your CSS file
 
 const DataTable = ({ data }) => {
     const [filterInput, setFilterInput] = useState('');
@@ -42,7 +43,7 @@ const DataTable = ({ data }) => {
         });
 
         return dateFiltered;
-    }, [filterInput, selectedCategories, selectedSubcategories, priceRange, dateRange, fuse]); // Include fuse as a dependency
+    }, [filterInput, selectedCategories, selectedSubcategories, priceRange, dateRange, fuse, data]); // Include data as a dependency
 
     // Define table columns
     const columns = useMemo(() => [
@@ -88,8 +89,8 @@ const DataTable = ({ data }) => {
     };
 
     return (
-        <div>
-            <button onClick={toggleFilterPanel}>
+        <div className="data-table-container">
+            <button onClick={toggleFilterPanel} className="toggle-filter-button">
                 {isFilterPanelVisible ? 'Hide Filters' : 'Show Filters'}
             </button>
 
@@ -109,12 +110,12 @@ const DataTable = ({ data }) => {
                 />
             )}
 
-            <table {...getTableProps()} style={{ width: '100%', border: '1px solid black' }}>
+            <table {...getTableProps()} className="data-table">
                 <thead>
                     {headerGroups.map(headerGroup => (
                         <tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <th {...column.getHeaderProps(column.getSortByToggleProps())} style={{ border: '1px solid black' }}>
+                                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                                     {column.render('Header')}
                                     <span>
                                         {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
@@ -130,7 +131,7 @@ const DataTable = ({ data }) => {
                         return (
                             <tr {...row.getRowProps()}>
                                 {row.cells.map(cell => (
-                                    <td {...cell.getCellProps()} style={{ border: '1px solid black' }}>{cell.render('Cell')}</td>
+                                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                 ))}
                             </tr>
                         );
@@ -138,7 +139,7 @@ const DataTable = ({ data }) => {
                 </tbody>
             </table>
 
-            <div>
+            <div className="pagination-controls">
                 <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
                     {'<<'}
                 </button>
