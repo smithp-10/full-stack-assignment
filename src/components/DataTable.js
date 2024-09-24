@@ -11,11 +11,13 @@ const DataTable = ({ data }) => {
     const [dateRange, setDateRange] = useState([null, null]);
     const [isFilterPanelVisible, setIsFilterPanelVisible] = useState(false);
 
-    const fuse = new Fuse(data, {
+    // Initialize fuse with data and options
+    const fuse = useMemo(() => new Fuse(data, {
         keys: ['name'],
         threshold: 0.3,
-    });
+    }), [data]); // Use data as dependency for fuse
 
+    // Memoize the filtered data based on the applied filters
     const filteredData = useMemo(() => {
         const searchResults = filterInput ? fuse.search(filterInput).map(result => result.item) : data;
 
@@ -40,8 +42,9 @@ const DataTable = ({ data }) => {
         });
 
         return dateFiltered;
-    }, [filterInput, selectedCategories, selectedSubcategories, priceRange, dateRange, data]);
+    }, [filterInput, selectedCategories, selectedSubcategories, priceRange, dateRange, fuse]); // Include fuse as a dependency
 
+    // Define table columns
     const columns = useMemo(() => [
         { Header: 'Name', accessor: 'name' },
         { Header: 'Category', accessor: 'category' },
